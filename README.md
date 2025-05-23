@@ -92,23 +92,6 @@ This generator follows official Catan setup rules:
 - **Balanced Distribution**: Ensures no single corner has too many high-probability numbers
 - **Strategic Desert Placement**: Desert is placed to maintain game balance
 
-## 🌐 Deployment
-
-### Deploy to Vercel (Recommended)
-
-1. **Fork this repository**
-2. **Connect to Vercel**:
-   - Go to [vercel.com](https://vercel.com)
-   - Click "New Project"
-   - Import your forked repository
-   - Click "Deploy"
-
-### Deploy to Netlify
-
-1. **Build the project**: `npm run build`
-2. **Upload the `build` folder** to Netlify
-3. **Configure redirects** for single-page application
-
 ### Deploy to GitHub Pages
 
 ```bash
@@ -134,15 +117,6 @@ We welcome contributions! Here's how to get started:
 5. **Push to the branch**: `git push origin feature/amazing-feature`
 6. **Open a Pull Request**
 
-### Contribution Ideas
-
-- [ ] Add expansion board layouts (5-6 players)
-- [ ] Implement board validation algorithms
-- [ ] Add board sharing functionality
-- [ ] Create board statistics and analysis
-- [ ] Add dark/light theme toggle
-- [ ] Implement board export/import
-- [ ] Add accessibility improvements
 
 ## 📝 License
 
@@ -152,13 +126,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Catan is a beloved board game created by Klaus Teuber. This generator is a fan-made tool to enhance your gaming experience and is not affiliated with Catan Studio or the official Catan brand.
 
-## 📞 Support
-
-- **Issues**: [GitHub Issues](https://github.com/Tr1pl3x/catan-map-generator/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/Tr1pl3x/catan-map-generator/discussions)
-- **Email**: your-email@example.com
-
-## 🙏 Acknowledgments
 
 - Klaus Teuber for creating the amazing game of Catan
 - The React team for the excellent framework
