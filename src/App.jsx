@@ -251,18 +251,52 @@ const CatanMapGenerator = () => {
       fontWeight: '600',
       color: '#374151'
     },
-    legendInfo: {
+    rulesInfo: {
       padding: '16px',
-      background: 'linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%)',
+      background: 'linear-gradient(135deg, #ecfdf5 0%, #dcfce7 100%)',
       borderRadius: '12px',
-      border: '2px solid #f59e0b'
+      border: '2px solid #10b981',
+      marginTop: '20px'
     },
-    legendInfoText: {
-      fontSize: '16px',
-      color: '#92400e',
+    rulesTitle: {
+      fontSize: '18px',
+      fontWeight: '700',
+      color: '#065f46',
+      marginBottom: '12px',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px'
+    },
+    rulesList: {
+      fontSize: '14px',
+      color: '#047857',
       margin: 0,
-      lineHeight: '1.6',
-      fontWeight: '500'
+      paddingLeft: '20px',
+      lineHeight: '1.6'
+    },
+    statsContainer: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+      gap: '16px',
+      marginTop: '20px'
+    },
+    statCard: {
+      padding: '16px',
+      background: 'linear-gradient(135deg, #fefbff 0%, #f3e8ff 100%)',
+      borderRadius: '12px',
+      border: '2px solid #a855f7',
+      textAlign: 'center'
+    },
+    statTitle: {
+      fontSize: '14px',
+      fontWeight: '600',
+      color: '#6b21a8',
+      marginBottom: '8px'
+    },
+    statValue: {
+      fontSize: '24px',
+      fontWeight: 'bold',
+      color: '#4c1d95'
     }
   };
 
@@ -275,35 +309,6 @@ const CatanMapGenerator = () => {
     desert: '#d97706'
   };
 
-  // Sample board data - fallback
-  const sampleBoard = {
-    hexes: [
-      { id: 0, type: 'forest', number: 11, row: 0, col: 0 },
-      { id: 1, type: 'pasture', number: 12, row: 0, col: 1 },
-      { id: 2, type: 'grain', number: 9, row: 0, col: 2 },
-      
-      { id: 3, type: 'hill', number: 4, row: 1, col: 0 },
-      { id: 4, type: 'mountain', number: 6, row: 1, col: 1 },
-      { id: 5, type: 'hill', number: 5, row: 1, col: 2 },
-      { id: 6, type: 'pasture', number: 10, row: 1, col: 3 },
-      
-      { id: 7, type: 'grain', number: 9, row: 2, col: 0 },
-      { id: 8, type: 'forest', number: 11, row: 2, col: 1 },
-      { id: 9, type: 'desert', number: null, row: 2, col: 2 },
-      { id: 10, type: 'forest', number: 3, row: 2, col: 3 },
-      { id: 11, type: 'mountain', number: 8, row: 2, col: 4 },
-      
-      { id: 12, type: 'grain', number: 8, row: 3, col: 0 },
-      { id: 13, type: 'pasture', number: 10, row: 3, col: 1 },
-      { id: 14, type: 'pasture', number: 5, row: 3, col: 2 },
-      { id: 15, type: 'hill', number: 4, row: 3, col: 3 },
-      
-      { id: 16, type: 'hill', number: 11, row: 4, col: 0 },
-      { id: 17, type: 'forest', number: 12, row: 4, col: 1 },
-      { id: 18, type: 'grain', number: 6, row: 4, col: 2 }
-    ]
-  };
-
   const terrainNames = {
     forest: 'Wood',
     pasture: 'Sheep', 
@@ -313,7 +318,7 @@ const CatanMapGenerator = () => {
     desert: 'Desert'
   };
 
-  // Catan board generation logic
+  // Enhanced Catan board generation logic with proper rules
   const generateRandomBoard = (difficulty, seed) => {
     const seededRandom = (str) => {
       let hash = 0;
@@ -328,11 +333,10 @@ const CatanMapGenerator = () => {
       return x - Math.floor(x);
     };
 
-    const random = seed ? (() => {
-      let seedValue = seed + Date.now().toString();
-      return () => seededRandom(seedValue++);
-    })() : Math.random;
+    let currentSeed = seed ? seed + Date.now().toString() : Date.now().toString();
+    const random = () => seededRandom(currentSeed++);
 
+    // Official Catan terrain distribution
     const terrainTiles = [
       'forest', 'forest', 'forest', 'forest',
       'pasture', 'pasture', 'pasture', 'pasture',
@@ -342,6 +346,7 @@ const CatanMapGenerator = () => {
       'desert'
     ];
 
+    // Official number tokens (excluding 7 for desert)
     const numberTokens = [2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12];
 
     const shuffleArray = (array) => {
@@ -353,25 +358,16 @@ const CatanMapGenerator = () => {
       return shuffled;
     };
 
-    const getDesertPosition = () => {
-      const positions = [
-        [0, 0], [0, 1], [0, 2], [1, 0], [1, 3], [2, 0], [2, 4], [3, 0], [3, 3], [4, 0], [4, 1], [4, 2],
-        [1, 1], [1, 2], [2, 1], [2, 3], [3, 1], [3, 2],
-        [2, 2]
-      ];
+    // Define the snake pattern order for number placement
+    const snakeOrder = [
+      [0, 0], [0, 1], [0, 2],           // Top row (left to right)
+      [1, 3], [1, 2], [1, 1], [1, 0],  // Second row (right to left)
+      [2, 0], [2, 1], [2, 2], [2, 3], [2, 4], // Middle row (left to right)
+      [3, 3], [3, 2], [3, 1], [3, 0],  // Fourth row (right to left)
+      [4, 0], [4, 1], [4, 2]           // Bottom row (left to right)
+    ];
 
-      let availablePositions;
-      if (difficulty === 'easy') {
-        availablePositions = positions.slice(0, 12);
-      } else if (difficulty === 'medium') {
-        availablePositions = positions;
-      } else {
-        availablePositions = [[2, 2], ...positions.slice(12, 18)];
-      }
-
-      return availablePositions[Math.floor(random() * availablePositions.length)];
-    };
-
+    // Create board positions
     const boardPositions = [
       { row: 0, positions: 3 },
       { row: 1, positions: 4 },
@@ -383,6 +379,7 @@ const CatanMapGenerator = () => {
     let hexes = [];
     let hexId = 0;
 
+    // Initialize hexes
     boardPositions.forEach(({ row, positions }) => {
       for (let col = 0; col < positions; col++) {
         hexes.push({
@@ -395,26 +392,156 @@ const CatanMapGenerator = () => {
       }
     });
 
+    // Shuffle and assign terrain
     const shuffledTerrain = shuffleArray(terrainTiles);
-    
     hexes.forEach((hex, index) => {
       hex.type = shuffledTerrain[index];
     });
 
+    // Strategic desert placement based on difficulty
+    const getDesertPosition = () => {
+      const edgePositions = [
+        [0, 0], [0, 1], [0, 2], // Top edge
+        [1, 0], [1, 3],         // Left/right edge
+        [2, 0], [2, 4],         // Left/right edge
+        [3, 0], [3, 3],         // Left/right edge
+        [4, 0], [4, 1], [4, 2]  // Bottom edge
+      ];
+      
+      const innerPositions = [
+        [1, 1], [1, 2],         // Inner ring
+        [2, 1], [2, 3],         // Inner ring
+        [3, 1], [3, 2]          // Inner ring
+      ];
+      
+      const centerPosition = [[2, 2]]; // Center
+
+      let availablePositions;
+      if (difficulty === 'easy') {
+        availablePositions = edgePositions; // Easier: desert on edges
+      } else if (difficulty === 'medium') {
+        availablePositions = [...edgePositions, ...innerPositions]; // Medium: anywhere but center
+      } else {
+        availablePositions = [...innerPositions, ...centerPosition]; // Hard: center or inner ring
+      }
+
+      return availablePositions[Math.floor(random() * availablePositions.length)];
+    };
+
+    // Place desert strategically
     const desertPos = getDesertPosition();
     const desertHex = hexes.find(hex => hex.row === desertPos[0] && hex.col === desertPos[1]);
     if (desertHex) {
       const currentDesertIndex = hexes.findIndex(hex => hex.type === 'desert');
-      if (currentDesertIndex !== -1) {
+      if (currentDesertIndex !== -1 && currentDesertIndex !== hexes.indexOf(desertHex)) {
+        // Swap desert with target position
         const tempType = hexes[currentDesertIndex].type;
         hexes[currentDesertIndex].type = desertHex.type;
         desertHex.type = tempType;
       }
     }
 
+    // Get adjacent hexes function
+    const getAdjacentHexes = (hex) => {
+      const adjacent = [];
+      const { row, col } = hex;
+      
+      // Hex grid adjacency (considering offset coordinates)
+      const evenRowOffsets = [[-1, -1], [-1, 0], [0, -1], [0, 1], [1, -1], [1, 0]];
+      const oddRowOffsets = [[-1, 0], [-1, 1], [0, -1], [0, 1], [1, 0], [1, 1]];
+      const offsets = row % 2 === 0 ? evenRowOffsets : oddRowOffsets;
+
+      offsets.forEach(([dRow, dCol]) => {
+        const newRow = row + dRow;
+        const newCol = col + dCol;
+        const adjacentHex = hexes.find(h => h.row === newRow && h.col === newCol);
+        if (adjacentHex) {
+          adjacent.push(adjacentHex);
+        }
+      });
+
+      return adjacent;
+    };
+
+    // Apply snake pattern for number placement
     const shuffledNumbers = shuffleArray(numberTokens);
     let numberIndex = 0;
 
+    // Place numbers following snake pattern
+    snakeOrder.forEach(([row, col]) => {
+      const hex = hexes.find(h => h.row === row && h.col === col);
+      if (hex && hex.type !== 'desert' && hex.number === null) {
+        let attempts = 0;
+        let numberAssigned = false;
+        const maxAttempts = shuffledNumbers.length;
+        
+        while (!numberAssigned && attempts < maxAttempts && numberIndex < shuffledNumbers.length) {
+          const number = shuffledNumbers[numberIndex];
+          
+          // Check 6s and 8s adjacency constraint
+          if (number === 6 || number === 8) {
+            const adjacentHexes = getAdjacentHexes(hex);
+            const hasAdjacentRedNumber = adjacentHexes.some(adjHex => 
+              adjHex.number === 6 || adjHex.number === 8
+            );
+            
+            if (!hasAdjacentRedNumber) {
+              hex.number = number;
+              numberAssigned = true;
+            } else {
+              // Try to find a different number for this position
+              let foundAlternative = false;
+              for (let i = numberIndex + 1; i < shuffledNumbers.length; i++) {
+                const altNumber = shuffledNumbers[i];
+                if (altNumber !== 6 && altNumber !== 8) {
+                  // Swap the numbers in the array
+                  shuffledNumbers[numberIndex] = altNumber;
+                  shuffledNumbers[i] = number;
+                  hex.number = altNumber;
+                  numberAssigned = true;
+                  foundAlternative = true;
+                  break;
+                }
+              }
+              
+              if (!foundAlternative) {
+                numberIndex++;
+                attempts++;
+              }
+            }
+          } else {
+            hex.number = number;
+            numberAssigned = true;
+          }
+          
+          if (numberAssigned) {
+            numberIndex++;
+          }
+        }
+        
+        // Fallback: assign any remaining number if constraints can't be satisfied
+        if (!numberAssigned && numberIndex < shuffledNumbers.length) {
+          hex.number = shuffledNumbers[numberIndex++];
+        }
+      }
+    });
+
+    // Assign any remaining numbers to hexes that don't have numbers yet
+    hexes.forEach(hex => {
+      if (hex.type !== 'desert' && hex.number === null && numberIndex < shuffledNumbers.length) {
+        hex.number = shuffledNumbers[numberIndex++];
+      }
+    });
+
+    return { hexes, placementRules: getPlacementSummary(hexes) };
+  };
+
+  const getPlacementSummary = (hexes) => {
+    const redNumbers = hexes.filter(hex => hex.number === 6 || hex.number === 8);
+    const desertHex = hexes.find(hex => hex.type === 'desert');
+    const numberTokens = hexes.filter(hex => hex.number !== null).length;
+    
+    // Check for adjacent 6s and 8s
     const getAdjacentHexes = (hex) => {
       const adjacent = [];
       const { row, col } = hex;
@@ -435,40 +562,19 @@ const CatanMapGenerator = () => {
       return adjacent;
     };
 
-    hexes.forEach(hex => {
-      if (hex.type !== 'desert') {
-        let attempts = 0;
-        let numberAssigned = false;
-        
-        while (!numberAssigned && attempts < shuffledNumbers.length) {
-          const number = shuffledNumbers[numberIndex % shuffledNumbers.length];
-          numberIndex++;
-          
-          if (number === 6 || number === 8) {
-            const adjacentHexes = getAdjacentHexes(hex);
-            const hasAdjacentRedNumber = adjacentHexes.some(adjHex => 
-              adjHex.number === 6 || adjHex.number === 8
-            );
-            
-            if (!hasAdjacentRedNumber) {
-              hex.number = number;
-              numberAssigned = true;
-            }
-          } else {
-            hex.number = number;
-            numberAssigned = true;
-          }
-          
-          attempts++;
-        }
-        
-        if (!numberAssigned && numberIndex < shuffledNumbers.length) {
-          hex.number = shuffledNumbers[numberIndex++];
-        }
-      }
+    const hasAdjacentRedNumbers = redNumbers.some(hex => {
+      const adjacent = getAdjacentHexes(hex);
+      return adjacent.some(adjHex => adjHex.number === 6 || adjHex.number === 8);
     });
-
-    return { hexes };
+    
+    return {
+      totalHexes: hexes.length,
+      numberTokens: numberTokens,
+      redNumbers: redNumbers.length,
+      desertPlacement: desertHex ? `Row ${desertHex.row + 1}, Col ${desertHex.col + 1}` : 'Not found',
+      followsSnakePattern: true,
+      noAdjacentRedNumbers: !hasAdjacentRedNumbers
+    };
   };
 
   const generateNewBoard = async () => {
@@ -488,7 +594,7 @@ const CatanMapGenerator = () => {
     }
   }, [boardData]);
 
-  const currentBoard = boardData || sampleBoard;
+  const currentBoard = boardData || { hexes: [], placementRules: {} };
 
   const Hexagon = ({ hex }) => {
     const getNumberTokenStyle = (number) => {
@@ -549,17 +655,16 @@ const CatanMapGenerator = () => {
     ];
 
     const getRowOffset = (rowIndex) => {
-      // Adjusted offsets for better centering
-      if (rowIndex === 0 || rowIndex === 4) return 38; // Top and bottom rows (3 hexes)
-      if (rowIndex === 1 || rowIndex === 3) return 19; // Second rows (4 hexes)
-      return 0; // Middle row (5 hexes) - no offset
+      if (rowIndex === 0 || rowIndex === 4) return 38;
+      if (rowIndex === 1 || rowIndex === 3) return 19;
+      return 0;
     };
 
     return (
       <div style={styles.boardContainer}>
         <div style={{
           ...styles.boardContent,
-          transform: 'translateX(-10px)' // Additional centering adjustment
+          transform: 'translateX(-10px)'
         }}>
           {rows.map((row, rowIndex) => (
             <div 
@@ -682,6 +787,8 @@ const CatanMapGenerator = () => {
               />
             </div>
           )}
+
+
         </div>
 
         {/* Board Display */}
@@ -718,6 +825,17 @@ const CatanMapGenerator = () => {
           </div>
         </div>
       </div>
+
+      {/* Add CSS animations */}
+      <style>{`
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.7; }
+        }
+      `}</style>
     </div>
   );
 };
