@@ -15,6 +15,37 @@ A modern, interactive web application that generates random, balanced Catan boar
 - **🎨 Beautiful UI** - Clean, modern interface with smooth animations
 - **🌊 Visual Appeal** - Hexagonal tiles with realistic colors and styling
 
+
+## 🎲 Board Generation Rules
+
+This generator follows the official Catan setup rules to ensure balanced, fair gameplay:
+
+### Terrain Distribution
+- **19 Total Hexes**: 4 Forest, 4 Pasture, 4 Grain, 3 Hill, 3 Mountain, 1 Desert
+- **Strategic Desert Placement**: Based on difficulty level
+  - **Easy**: Desert placed on board edges only
+  - **Medium**: Desert anywhere except center hex
+  - **Hard**: Desert in center or inner ring positions
+
+### Number Token Placement
+- **18 Number Tokens**: 2×(3,4,5,6,8,9,10,11) + 1×(2,12)
+- **Snake Pattern Distribution**: Numbers placed following official spiral pattern for balanced probability distribution
+- **Red Number Rule**: 6s and 8s (highest probability) cannot be adjacent to each other
+- **No Number 7**: Desert hex receives no number token (robber starts here)
+
+### Balancing Logic
+- **Adjacency Constraints**: Prevents clustering of high-probability numbers
+- **Fair Resource Distribution**: Snake pattern ensures even spread of valuable resources
+- **Probability Balance**: High and low probability numbers distributed evenly around the board
+- **Strategic Variance**: Different difficulty levels create varying strategic challenges
+
+### Compliance Verification
+The generator validates each board to ensure:
+- ✅ Correct terrain and number counts
+- ✅ No adjacent 6s and 8s
+- ✅ Proper snake pattern implementation
+- ✅ Strategic desert placement per difficulty setting
+
 ## 🎮 How to Use
 
 1. **Visit the Live App** - [catan-map-generator.vercel.app](https://your-app-url.vercel.app)
