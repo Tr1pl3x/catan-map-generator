@@ -608,9 +608,6 @@ const CatanMapGenerator = () => {
           <h1 style={styles.headerTitle}>
             🏝️ Catan Map Generator
           </h1>
-          <p style={styles.headerSubtitle}>
-            Generate random, balanced Catan boards in seconds. Perfect for quick setup and fair gameplay!
-          </p>
         </div>
 
         {/* Controls */}
@@ -718,12 +715,6 @@ const CatanMapGenerator = () => {
                 <span style={styles.legendName}>{name}</span>
               </div>
             ))}
-          </div>
-          <div style={styles.legendInfo}>
-            <p style={styles.legendInfoText}>
-              <strong>🎲 Number Tokens:</strong> Red circles (6 & 8) are high-probability rolls. 
-              The algorithm ensures no adjacent red numbers for balanced gameplay. Hover over hexes to see details!
-            </p>
           </div>
         </div>
       </div>

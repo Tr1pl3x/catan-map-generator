@@ -1,5 +1,8 @@
 # 🏝️ Catan Map Generator
 
+## 😇 Motivation
+During the term 1 break of 2025, I was drawn into Catan and it was frustrating to setup the board especially when you have friends over. I was really into the game that I started watching youtube vidoes on stratgies and stuff. That is when I came cross this one video of the guy talking about setting up a random board using python to generate an equal and balanced map so players can enjoy. I checked his source code and figured why don't I give it a try using js and maybe make myself a nifty little webapp so next time when I have my friends over, I wouldn't need to sweat on setting the board and start thining about the strategies asap!
+
 A modern, interactive web application that generates random, balanced Catan boards in seconds. Perfect for quick game setup and ensuring fair gameplay for all players!
 
 ## ✨ Features
